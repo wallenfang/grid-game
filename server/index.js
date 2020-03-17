@@ -7,6 +7,10 @@ const numCPUs = require('os').cpus().length;
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = process.env.PORT || 5000;
 
+var counter = 0;
+
+
+
 // Multi-process to utilize all CPU cores.
 if (!isDev && cluster.isMaster) {
   console.error(`Node cluster master ${process.pid} is running`);
@@ -22,9 +26,21 @@ if (!isDev && cluster.isMaster) {
 
 } else {
   const app = express();
-  const server = http.createServer(app)
-  const io = require('socket.io')(server)
+  const server = http.createServer(app);
+  const io = require('socket.io')(server);
 
+  setInterval(function () {
+    counter++;
+    console.log(io.sockets);
+    io.sockets.emit('timer', { counter: counter });
+  }, 1000);
+
+  io.sockets.on('connection', function (socket) {
+    socket.on('reset', function (data) {
+      counter = 0;
+      io.sockets.emit('timer', { counter: counter });
+    });
+  });
 
 
   // Priority serve any static files.

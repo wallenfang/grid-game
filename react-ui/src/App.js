@@ -4,13 +4,19 @@ import './App.css';
 import io from 'socket.io-client';
 
 
+const socket = io(window.location.hostname + ":3000");
+
 
 function App() {
   const [message, setMessage] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
+  const [counter, setCounter] = useState(false);
   const [url, setUrl] = useState('/api');
-  const socket = io('/websocket');
 
+  socket.on('timer', function (data) {
+    console.log('nice');
+    setCounter(data.counter);
+  });
 
   const fetchData = useCallback(() => {
     fetch(url)
@@ -57,14 +63,9 @@ function App() {
         >
           React + Node deployment on Heroku
         </a></p>
-        <p><a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a></p>
+        <p>
+          Counter: {counter}
+        </p>
       </header>
     </div>
   );
