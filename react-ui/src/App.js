@@ -4,7 +4,14 @@ import './App.css';
 import io from 'socket.io-client';
 
 
-const socket = io(window.location.hostname + ":3000");
+let address;
+if (window.location.hostname === 'localhost') { // development
+  address = `http://${window.location.hostname}:3000`;
+} else { // production
+  address = `https://${window.location.hostname}`;
+}
+
+const socket = io(address);
 
 
 function App() {
