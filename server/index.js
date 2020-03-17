@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require('http');
 const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
@@ -21,6 +22,16 @@ if (!isDev && cluster.isMaster) {
 
 } else {
   const app = express();
+  const server = http.createServer(app)
+  const io = require('socket.io')(server)
+
+
+  io.on('connection', function (socket) {
+    console.log('a user connected');
+    socket.on('disconnect', function () {
+      console.log('user disconnected');
+    });
+  });
 
   // Priority serve any static files.
   app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
