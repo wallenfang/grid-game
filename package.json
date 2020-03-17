@@ -1,5 +1,5 @@
 {
-  "name": "heroku-cra-node",
+  "name": "grid-game-server",
   "version": "3.0.0",
   "description": "How to use create-react-app with a custom Node API on Heroku",
   "engines": {
@@ -14,11 +14,12 @@
     "react-ui/node_modules"
   ],
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "socket.io": "^2.3.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mars/heroku-cra-node.git"
+    "url": "https://github.com/wallenfang/grid-game.git"
   },
   "keywords": [
     "node",
