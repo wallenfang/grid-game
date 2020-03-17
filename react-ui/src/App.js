@@ -1,11 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import io from 'socket.io-client';
+
+
 
 function App() {
   const [message, setMessage] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [url, setUrl] = useState('/api');
+  const socket = io('/websocket');
+
 
   const fetchData = useCallback(() => {
     fetch(url)
@@ -33,12 +38,12 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        { process.env.NODE_ENV === 'production' ?
-            <p>
-              This is a production build from create-react-app.
+        {process.env.NODE_ENV === 'production' ?
+          <p>
+            This is a production build from create-react-app.
             </p>
           : <p>
-              Edit <code>src/App.js</code> and save to reload.
+            Edit <code>src/App.js</code> and save to reload.
             </p>
         }
         <p>{'« '}<strong>
