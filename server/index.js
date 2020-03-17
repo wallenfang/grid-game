@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require('http');
 const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
@@ -21,12 +22,17 @@ if (!isDev && cluster.isMaster) {
 
 } else {
   const app = express();
+  const server = http.createServer(app)
+  const io = require('socket.io')(server)
+
+
 
   // Priority serve any static files.
   app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
   // Answer API requests.
   app.get('/api', function (request, response) {
+    console.log('api call')
     response.set('Content-Type', 'application/json');
     response.send('{"message":"Hello from MY custom server!"}');
   });
@@ -36,7 +42,17 @@ if (!isDev && cluster.isMaster) {
     response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
   });
 
-  app.listen(PORT, function () {
+  io.on('connection', function (client) {
+    console.log(`a user ${client.id} connected`);
+    client.on('disconnect', function () {
+      console.log('user disconnected');
+    });
+  });
+
+  server.listen(PORT, function () {
     console.error(`Node ${isDev ? 'dev server' : 'cluster worker ' + process.pid}: listening on port ${PORT}`);
   });
+  // app.listen(PORT, function () {
+  //   console.error(`Node ${isDev ? 'dev server' : 'cluster worker ' + process.pid}: listening on port ${PORT}`);
+  // });
 }
